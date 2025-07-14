@@ -25,5 +25,5 @@ COPY --from=builder /usr/src/app/dist ./dist
 # Optionally include .env or other assets
 # COPY .env ./
 
-EXPOSE 8000
+# EXPOSE 8000
 CMD ["node", "dist/index.js"]

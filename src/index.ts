@@ -63,7 +63,7 @@ bot.on(message("text"), async (ctx) => {
   }
 
   const agent = AIAgent.getAgent(agentId);
-  await ctx.sendChatAction('typing');
+  await ctx.sendChatAction("typing");
 
   const resp = await agent.generate({
     messages: [{
@@ -94,24 +94,29 @@ bot.on(message("text"), async (ctx) => {
   );
 });
 
-bot.launch({
-  webhook: {
-    // Public domain for webhook; e.g.: example.com
-    domain: String(process.env.TELEGRAM_BOT_WEBHOOK_DOMAIN),
-
-    // Port to listen on; e.g.: 8000
-    port: Number(process.env.TELEGRAM_BOT_PORT) || 8000,
-
-    // Optional path to listen for.
-    // `bot.secretPathComponent()` will be used by default
-    // path: webhookPath,
-
-    // Optional secret to be sent back in a header for security.
-    // e.g.: `crypto.randomBytes(64).toString("hex")`
-    secretToken: process.env.TELEGRAM_BOT_SECRET
-  },
+bot.launch(() => {
+  console.log("bot started succesfully");
 });
-bot.catch((err, ctx) => { /* log/report but don't crash */ });
+// bot.launch({
+//   webhook: {
+//     // Public domain for webhook; e.g.: example.com
+//     domain: String(process.env.TELEGRAM_BOT_WEBHOOK_DOMAIN),
+
+//     // Port to listen on; e.g.: 8000
+//     port: Number(process.env.TELEGRAM_BOT_PORT) || 8000,
+
+//     // Optional path to listen for.
+//     // `bot.secretPathComponent()` will be used by default
+//     // path: webhookPath,
+
+//     // Optional secret to be sent back in a header for security.
+//     // e.g.: `crypto.randomBytes(64).toString("hex")`
+//     secretToken: process.env.TELEGRAM_BOT_SECRET,
+//   },
+// });
+bot.catch((err, ctx) => {
+  console.log(err);
+});
 
 // Enable graceful stop
 process.once("SIGINT", () => bot.stop("SIGINT"));
