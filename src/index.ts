@@ -6,7 +6,7 @@ import AIAgent from "./api/matra";
 import telegramifyMarkdown from "telegramify-markdown";
 import { GetMemoryThreadMessagesResponse } from "@mastra/client-js";
 
-const bot = new Telegraf(String(process.env.BOT_TOKEN));
+const bot = new Telegraf(String(process.env.TELEGRAM_BOT_TOKEN));
 const agentId = "costumerServiceAgent";
 
 function countMessagesFromToday(messages: any[]) {
@@ -33,18 +33,17 @@ bot.command("quit", async (ctx) => {
 });
 
 bot.on(message("text"), async (ctx) => {
-
   const threadId = String(ctx.message.chat.id);
   try {
     const thread = AIAgent.getMemoryThread(threadId, agentId);
     const history = await thread.getMessages();
-    if (rateLimit(history)) {
-      return await ctx.reply(
-        `متاسفانه در به ۵ سوال روز قادر به پاسخگویی هستیم.
-برای اطلاعات بیشتر به سایت بازرگ مراجعه کنید.
-https://bazorg.com/`,
-      );
-    }
+    //     if (rateLimit(history)) {
+    //       return await ctx.reply(
+    //         `متاسفانه در به ۵ سوال روز قادر به پاسخگویی هستیم.
+    // برای اطلاعات بیشتر به سایت بازرگ مراجعه کنید.
+    // https://bazorg.com/`,
+    //       );
+    //     }
   } catch (error) {
     console.error("Initialization error:", error);
     if (error instanceof Error) {
@@ -64,6 +63,8 @@ https://bazorg.com/`,
   }
 
   const agent = AIAgent.getAgent(agentId);
+  await ctx.sendChatAction('typing');
+
   const resp = await agent.generate({
     messages: [{
       role: "user",
@@ -74,8 +75,11 @@ https://bazorg.com/`,
     temperature: 0.5,
     threadId: threadId,
     topP: 1,
+    maxSteps: 20,
+    maxRetries: 5,
   });
 
+  console.log(resp);
   if (resp.text === "") {
     return await ctx.reply(
       `مشکلی برای هوض‌مصنوعی پیش آمده.`,
@@ -90,7 +94,23 @@ https://bazorg.com/`,
   );
 });
 
-bot.launch();
+bot.launch({
+  webhook: {
+    // Public domain for webhook; e.g.: example.com
+    domain: String(process.env.TELEGRAM_BOT_WEBHOOK_DOMAIN),
+
+    // Port to listen on; e.g.: 8000
+    port: 8000,
+
+    // Optional path to listen for.
+    // `bot.secretPathComponent()` will be used by default
+    // path: webhookPath,
+
+    // Optional secret to be sent back in a header for security.
+    // e.g.: `crypto.randomBytes(64).toString("hex")`
+    secretToken: crypto.randomUUID(),
+  },
+});
 
 // Enable graceful stop
 process.once("SIGINT", () => bot.stop("SIGINT"));
