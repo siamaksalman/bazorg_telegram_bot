@@ -1,11 +1,14 @@
 {
   "compilerOptions": {
     "esModuleInterop": true,
-    "rootDir": ".",
-    "outDir": "build"
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "skipLibCheck": true    // prevents type errors in dependencies
+
   },
   "include": [
     "src/**/*.ts",
     "test/**/*.ts"
-  ]
+  ],
+  "exclude": ["node_modules"] // Exclude node_modules
 }

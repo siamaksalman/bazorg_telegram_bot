@@ -12,14 +12,14 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "@mastra/client-js": "^0.10.9",
-    "dotenv": "^17.1.0",
+    "@mastra/client-js": "^0.10.13",
+    "dotenv": "^17.2.0",
     "telegraf": "^4.16.3",
     "telegramify-markdown": "^1.3.0",
     "ts-node": "^10.9.2"
   },
   "devDependencies": {
-    "@types/node": "^22.7.5",
+    "@types/node": "^24.0.13",
     "nodemon": "^3.1.10",
     "typescript": "^5.6.3"
   }

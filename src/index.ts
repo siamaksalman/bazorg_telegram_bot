@@ -100,7 +100,7 @@ bot.launch({
     domain: String(process.env.TELEGRAM_BOT_WEBHOOK_DOMAIN),
 
     // Port to listen on; e.g.: 8000
-    port: 8000,
+    port: Number(process.env.TELEGRAM_BOT_PORT) || 8000,
 
     // Optional path to listen for.
     // `bot.secretPathComponent()` will be used by default
@@ -108,9 +108,10 @@ bot.launch({
 
     // Optional secret to be sent back in a header for security.
     // e.g.: `crypto.randomBytes(64).toString("hex")`
-    secretToken: crypto.randomUUID(),
+    secretToken: process.env.TELEGRAM_BOT_SECRET
   },
 });
+bot.catch((err, ctx) => { /* log/report but don't crash */ });
 
 // Enable graceful stop
 process.once("SIGINT", () => bot.stop("SIGINT"));
